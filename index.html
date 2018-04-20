@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Resistance</title>
+</head>
+<body onload='handleFormOnLoad()'>
+    <form id="main_form">
+    <script src="resistance.js"></script>
+
+    <table>
+      <tr>
+        <td><label>Number of players</label></td>
+        <td><input type="number" id="number_of_players_id"></td>
+      </tr>
+      <tr id="player_1_name_tr_id">
+        <td><label>Player 1</label></td>
+        <td><input type="text" id="player_1_name_id"></td>
+      </tr>
+      <tr id="player_2_name_tr_id">
+        <td><label>Player 2</label></td>
+        <td><input type="text" id="player_2_name_id"></td>
+      </tr>
+      <tr id="player_3_name_tr_id">
+        <td><label>Player 3</label></td>
+        <td><input type="text" id="player_3_name_id"></td>
+      </tr>
+      <tr id="player_4_name_tr_id">
+        <td><label>Player 4</label></td>
+        <td><input type="text" id="player_4_name_id"></td>
+      </tr>
+      <tr id="player_5_name_tr_id">
+        <td><label>Player 5</label></td>
+        <td><input type="text" id="player_5_name_id"></td>
+      </tr>
+      <tr id="player_6_name_tr_id">
+        <td><label>Player 6</label></td>
+        <td><input type="text" id="player_6_name_id"></td>
+      </tr>
+      <tr id="player_7_name_tr_id">
+        <td><label>Player 7</label></td>
+        <td><input type="text" id="player_7_name_id"></td>
+      </tr>
+      <tr id="player_8_name_tr_id">
+        <td><label>Player 8</label></td>
+        <td><input type="text" id="player_8_name_id"></td>
+      </tr>
+      <tr id="player_9_name_tr_id">
+        <td><label>Player 9</label></td>
+        <td><input type="text" id="player_9_name_id"></td>
+      </tr>
+      <tr id="player_10_name_tr_id">
+        <td><label>Player 10</label></td>
+        <td><input type="text" id="player_10_name_id"></td>
+      </tr>
+    </table>
+
+    <br>
+    
+    <input type="button" id="start_button" onclick="handleStartButton()" value="Start!"><br>
+
+    <script>
+        var game = new ResistanceGame();
+
+        function handleFormOnLoad() {
+            document.getElementById('number_of_players_id').value = game.numberOfPlayers;
+            for (var i = 0; i < 10; i++) {
+                document.getElementById('player_' + (i + 1) + '_name_id').value = game.players[i];
+            }
+        }
+
+        function handleStartButton() {
+            var numberOfPlayers = document.getElementById('number_of_players_id').value;
+
+            var players = [];
+            for (var i = 0; i < numberOfPlayers; i++) {
+                players.push(document.getElementById('player_' + (i + 1) + '_name_id').value);
+            }
+
+            game = new ResistanceGame(numberOfPlayers, players);
+
+            if (ResistanceRules.readyForStart(game)) {
+                alert('The game has been started...');
+                console.log('The game has been started for ' + game.numberOfPlayers + ' players!');
+                game.players.forEach(function(player) {
+                    console.log('Welcome ' + player);
+                });
+            }
+        }
+
+    </script>
+
+    </form>
+</body>
+</html>
