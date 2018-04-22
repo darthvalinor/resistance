@@ -56,7 +56,18 @@ var Rules = {
     getRoles: function(numberOfPlayers) {
         var roles = [];
         if (numberOfPlayers == 5) {
+            roles.push(this.Roles.Loyalist());
+            roles.push(this.Roles.Loyalist());
+            roles.push(this.Roles.Loyalist());
+            roles.push(this.Roles.Spy());
+            roles.push(this.Roles.Spy());
         } else if (numberOfPlayers == 6) {
+            roles.push(this.Roles.Loyalist());
+            roles.push(this.Roles.Loyalist());
+            roles.push(this.Roles.Loyalist());
+            roles.push(this.Roles.Loyalist());
+            roles.push(this.Roles.Spy());
+            roles.push(this.Roles.Spy());
         } else if (numberOfPlayers == 7) {
             roles.push(this.Roles.Loyalist());
             roles.push(this.Roles.Loyalist());
@@ -66,8 +77,35 @@ var Rules = {
             roles.push(this.Roles.Morgana());
             roles.push(this.Roles.Assassin());
         } else if (numberOfPlayers == 8) {
+            roles.push(this.Roles.Loyalist());
+            roles.push(this.Roles.Loyalist());
+            roles.push(this.Roles.Loyalist());
+            roles.push(this.Roles.Merlin());
+            roles.push(this.Roles.Percival());
+            roles.push(this.Roles.Mordred());
+            roles.push(this.Roles.Morgana());
+            roles.push(this.Roles.Assassin());
         } else if (numberOfPlayers == 9) {
+            roles.push(this.Roles.Loyalist());
+            roles.push(this.Roles.Loyalist());
+            roles.push(this.Roles.Loyalist());
+            roles.push(this.Roles.Loyalist());
+            roles.push(this.Roles.Merlin());
+            roles.push(this.Roles.Percival());
+            roles.push(this.Roles.Mordred());
+            roles.push(this.Roles.Morgana());
+            roles.push(this.Roles.Assassin());
         } else if (numberOfPlayers == 10) {
+            roles.push(this.Roles.Loyalist());
+            roles.push(this.Roles.Loyalist());
+            roles.push(this.Roles.Loyalist());
+            roles.push(this.Roles.Loyalist());
+            roles.push(this.Roles.Merlin());
+            roles.push(this.Roles.Percival());
+            roles.push(this.Roles.Mordred());
+            roles.push(this.Roles.Morgana());
+            roles.push(this.Roles.Assassin());
+            roles.push(this.Roles.Spy());
         }
         return roles;
     }
@@ -103,6 +141,12 @@ var Game = function(numberOfPlayers,players) {
 
         var roles = Rules.getRoles(this.numberOfPlayers);
         console.log('roles: ' + roles);
+
+        //prevent issues
+        if (roles.length != this.numberOfPlayers) {
+            alert('Error: could not generate roles');
+            return;
+        }
 
         // give roles randomly
         var taken = [];
