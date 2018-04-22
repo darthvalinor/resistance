@@ -60,7 +60,7 @@
     <input type="button" id="start_button" onclick="handleStartButton()" value="Start!"><br>
 
     <script>
-        var game = new ResistanceGame();
+        var game = new Game();
 
         function handleFormOnLoad() {
             document.getElementById('number_of_players_id').value = game.numberOfPlayers;
@@ -81,9 +81,9 @@
                 document.getElementsByClassName('player_' + (i + 1) + '_name_tr_class')[0].style.display = 'none';
             }
 
-            game = new ResistanceGame(numberOfPlayers, players);
+            game = new Game(numberOfPlayers, players);
 
-            if (ResistanceRules.readyForStart(game)) {
+            if (Rules.readyForStart(game)) {
                 alert('The game has been started...');
                 console.log('The game has been started for ' + game.numberOfPlayers + ' players!');
                 game.players.forEach(function(player) {
