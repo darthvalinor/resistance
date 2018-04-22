@@ -66,10 +66,11 @@
             var players = [];
             for (var i = 0; i < numberOfPlayers; i++) {
                 players.push(new Player(document.getElementById('player_' + (i + 1) + '_name_id').value));
+                document.getElementsByClassName('player_' + (i + 1) + '_name_tr_class')[0].style.backgroundColor = 'green';
             }
 
             for (var i = numberOfPlayers; i < 10; i++) {
-                document.getElementsByClassName('player_' + (i + 1) + '_name_tr_class')[0].style.display = 'none';
+                document.getElementsByClassName('player_' + (i + 1) + '_name_tr_class')[0].style.backgroundColor = 'white';
             }
 
             game = new Game(numberOfPlayers, players);
