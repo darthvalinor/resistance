@@ -51,6 +51,25 @@ var Rules = {
             requiredPlayers = this.Missions.For8plus[missionNumber - 1];
         }
         return new Mission(requiredPlayers);
+    },
+
+    getRoles: function(numberOfPlayers) {
+        var roles = [];
+        if (numberOfPlayers == 5) {
+        } else if (numberOfPlayers == 6) {
+        } else if (numberOfPlayers == 7) {
+            roles.push(this.Roles.Loyalist());
+            roles.push(this.Roles.Loyalist());
+            roles.push(this.Roles.Merlin());
+            roles.push(this.Roles.Percival());
+            roles.push(this.Roles.Mordred());
+            roles.push(this.Roles.Morgana());
+            roles.push(this.Roles.Assassin());
+        } else if (numberOfPlayers == 8) {
+        } else if (numberOfPlayers == 9) {
+        } else if (numberOfPlayers == 10) {
+        }
+        return roles;
     }
 
 };
@@ -74,12 +93,37 @@ var Game = function(numberOfPlayers,players) {
     this.players = players;
     this.currentMissionNumber = 0;
     this.mission = null;
+    this.leader = null;
 
     this.start = function() {
         console.log('The game has been started for ' + this.numberOfPlayers + ' players!');
-        this.players.forEach(function(player) {
-            console.log('Welcome ' + player.name);
+        this.players.forEach(function(p) {
+            console.log('Welcome ' + p.name);
         });
+
+        var roles = Rules.getRoles(this.numberOfPlayers);
+        console.log('roles: ' + roles);
+
+        // give roles randomly
+        var taken = [];
+        var self = this; //TODO
+        this.players.forEach(function(p) {
+            var role = null;
+            do {
+                role = roles[Utils.randomInt(self.numberOfPlayers)];
+            } while (taken.indexOf(role) > -1);
+            taken.push(role);
+            p.role = role;
+        });
+        this.players.forEach(function(p) {
+            console.log('Player ' + p.name + ' is ' + p.role.name);
+        });
+        console.log('taken: ' + taken);
+
+        // assign leader randomly
+        this.leader = players[Utils.randomInt(this.numberOfPlayers)];
+        console.log('...and the leader is... ' + this.leader.name + '! Good luck!..');
+        
         this.startNewMission();
     };
 
@@ -89,3 +133,10 @@ var Game = function(numberOfPlayers,players) {
         console.log('Mission ' + this.currentMissionNumber + ' starts... Players required : ' + this.mission.requiredPlayers);
     }
 };
+
+var Utils = {
+    // [0, cap)
+    randomInt: function(cap) {
+        return Math.floor(Math.random() * cap);
+    }
+}
