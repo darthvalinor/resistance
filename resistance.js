@@ -8,12 +8,27 @@ var Rules = {
     },
 
     Roles: {
-        Loyalist: {},
-        Merlin: {},
-        Percival: {},
-        Mordred: {},
-        Morgana: {},
-        Assassin: {}
+        Loyalist: function() {
+            return new Role('Loyalist', false);
+        },
+        Merlin: function() {
+            return new Role('Merlin', false);
+        },
+        Percival: function() {
+            return new Role('Percival', false);
+        },
+        Mordred: function() {
+            return new Role('Mordred', true);
+        },
+        Morgana: function() {
+            return new Role('Morgana', true);
+        },
+        Assassin: function() {
+            return new Role('Assassin', true);
+        },
+        Spy: function() {
+            return new Role('Spy', true);
+        }
     },
 
     readyForStart: function(currentGame) {
@@ -44,6 +59,16 @@ var Mission = function(requiredPlayers) {
     this.requiredPlayers = requiredPlayers;
 }
 
+var Role = function(name, isMafia) {
+    this.name = name;
+    this.isMafia = isMafia;
+}
+
+var Player = function(name) {
+    this.name = name;
+    this.role = null;
+}
+
 var Game = function(numberOfPlayers,players) {
     this.numberOfPlayers = numberOfPlayers;
     this.players = players;
@@ -53,7 +78,7 @@ var Game = function(numberOfPlayers,players) {
     this.start = function() {
         console.log('The game has been started for ' + this.numberOfPlayers + ' players!');
         this.players.forEach(function(player) {
-            console.log('Welcome ' + player);
+            console.log('Welcome ' + player.name);
         });
         this.startNewMission();
     };

@@ -65,7 +65,7 @@
 
             var players = [];
             for (var i = 0; i < numberOfPlayers; i++) {
-                players.push(document.getElementById('player_' + (i + 1) + '_name_id').value);
+                players.push(new Player(document.getElementById('player_' + (i + 1) + '_name_id').value));
             }
 
             for (var i = numberOfPlayers; i < 10; i++) {
