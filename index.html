@@ -54,7 +54,8 @@
         <td><input type="text" id="player_10_name_id" value="J"></td>
       </tr>
       <tr>
-        <td colspan="2" align="center"><input type="button" id="start_button" onclick="handleStartButton()" value="Start!"></td>
+        <td><input type="button" id="start_button" onclick="startGame()" value="Start!"></td>
+        <td><input type="button" id="give_button" onclick="giveCards()" value="Give!"></td>
       </tr>
       <tr>
         <td colspan="2" align="center"><textarea id="output" readonly cols="40" rows="20"></textarea></td>
@@ -62,7 +63,9 @@
     </table>
 
     <script>
-        function handleStartButton() {
+        var game = null;
+
+        function startGame() {
             var numberOfPlayers = parseInt(document.getElementById('number_of_players_id').value);
 
             var players = [];
@@ -85,14 +88,33 @@
                 game.players.forEach(function(p) {
                     print('Player ' + p.name + ' is ' + p.role.name);
                 });
-                print('...and the leader is... ' + game.leader.name + '! Good luck!..');
                 print('Mission ' + game.currentMissionNumber + ' starts... Players required : ' + game.mission.requiredPlayers);
+                print('...and the leader is... ' + game.leader.name + '! Good luck!..');
+                game.leader.cardsToGive.forEach(function(c) {
+                    print('The leader ' + game.leader.name + ' takes ' + c.name + ' from the deck');
+                });
             }
         }
 
+        function giveCards() {
+            Utils.shuffle(game.leader.cardsToGive);
+
+            var cannotGetCard = [game.leader];
+            var player;
+            var card;
+            do {
+                player = game.randomPlayer(cannotGetCard);
+                card = game.leader.cardsToGive.pop();
+                player.cards.push(card);
+                cannotGetCard.push(player);
+                print(player.name + ' gets ' + card.name);
+            } while (game.leader.cardsToGive.length > 0);
+        }
+
         function print(line) {
-            document.getElementById("output").value += (line + '\n');
-            console.log(line);
+            var output = document.getElementById('output');
+            output.value += (line + '\n');
+            output.scrollTop = output.scrollHeight;
         }
     </script>
 

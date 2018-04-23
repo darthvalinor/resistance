@@ -51,7 +51,7 @@ var Rules = {
         }
     },
 
-    getCards(numberOfPlayers) {
+    getDeck(numberOfPlayers) {
         var cards = [
             this.Cards.NoConfidence(),
             this.Cards.StrongLeader(),
@@ -74,6 +74,16 @@ var Rules = {
             );
         }
         return cards;
+    },
+
+    getNumberOfCards(numberOfPlayers) {
+        var numberOfCards = 1;
+        if (numberOfPlayers == 7 || numberOfPlayers == 8) {
+            numberOfCards = 2;
+        } else if (numberOfPlayers == 9 || numberOfPlayers == 10) {
+            numberOfCards = 3;
+        }
+        return numberOfCards;
     },
 
     Roles: {
@@ -179,11 +189,14 @@ var Role = function(name, isMafia) {
 var Card = function(name, isReveal) {
     this.name = name;
     this.isReveal = isReveal;
+    this.used = false;
 }
 
 var Player = function(name) {
     this.name = name;
     this.role = null;
+    this.cards = [];
+    this.cardsToGive = [];
 }
 
 var Game = function(numberOfPlayers,players) {
@@ -192,29 +205,19 @@ var Game = function(numberOfPlayers,players) {
     this.currentMissionNumber = 0;
     this.mission = null;
     this.leader = null;
+    this.deck = null;
 
     this.start = function() {
         var roles = Rules.getRoles(this.numberOfPlayers);
 
-        //prevent issues
-        if (roles.length != this.numberOfPlayers) {
-            alert('Error: could not generate roles');
-            return;
-        }
-
-        // give roles randomly
-        var taken = [];
-        var self = this; //TODO
+        Utils.shuffle(roles);
         this.players.forEach(function(p) {
-            var role = null;
-            do {
-                role = roles[Utils.randomInt(self.numberOfPlayers)];
-            } while (taken.indexOf(role) > -1);
-            taken.push(role);
-            p.role = role;
+            p.role = roles.pop();
         });
 
-        // assign leader randomly
+        this.deck = Rules.getDeck(this.numberOfPlayers);
+        Utils.shuffle(this.deck);
+
         this.leader = players[Utils.randomInt(this.numberOfPlayers)];
         
         this.startNewMission();
@@ -222,7 +225,22 @@ var Game = function(numberOfPlayers,players) {
 
     this.startNewMission = function() {
         this.currentMissionNumber++;
+        
         this.mission = Rules.getMission(this.currentMissionNumber, numberOfPlayers);
+
+        var cardsToTake = Rules.getNumberOfCards(numberOfPlayers);
+        for (var i = 0; i < cardsToTake; i++) {
+            this.leader.cardsToGive.push(this.deck.pop());
+        }
+    };
+
+    //TODO not here
+    this.randomPlayer = function(excludes) {
+        var player;
+        do {
+            player = this.players[Utils.randomInt(numberOfPlayers)];
+        } while (excludes.indexOf(player)>-1);
+        return player;
     }
 };
 
@@ -230,5 +248,17 @@ var Utils = {
     // [0, cap)
     randomInt: function(cap) {
         return Math.floor(Math.random() * cap);
+    },
+
+    shuffle: function (arr) {
+        var i, j;
+        var box;
+        for (i = arr.length - 1; i > 0; i--) {
+            j = this.randomInt(i + 1);
+            box = arr[i];
+            arr[i] = arr[j];
+            arr[j] = box;
+        }
+        return arr;
     }
 }
