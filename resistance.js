@@ -134,13 +134,7 @@ var Game = function(numberOfPlayers,players) {
     this.leader = null;
 
     this.start = function() {
-        console.log('The game has been started for ' + this.numberOfPlayers + ' players!');
-        this.players.forEach(function(p) {
-            console.log('Welcome ' + p.name);
-        });
-
         var roles = Rules.getRoles(this.numberOfPlayers);
-        console.log('roles: ' + roles);
 
         //prevent issues
         if (roles.length != this.numberOfPlayers) {
@@ -159,14 +153,9 @@ var Game = function(numberOfPlayers,players) {
             taken.push(role);
             p.role = role;
         });
-        this.players.forEach(function(p) {
-            console.log('Player ' + p.name + ' is ' + p.role.name);
-        });
-        console.log('taken: ' + taken);
 
         // assign leader randomly
         this.leader = players[Utils.randomInt(this.numberOfPlayers)];
-        console.log('...and the leader is... ' + this.leader.name + '! Good luck!..');
         
         this.startNewMission();
     };
@@ -174,7 +163,6 @@ var Game = function(numberOfPlayers,players) {
     this.startNewMission = function() {
         this.currentMissionNumber++;
         this.mission = Rules.getMission(this.currentMissionNumber, numberOfPlayers);
-        console.log('Mission ' + this.currentMissionNumber + ' starts... Players required : ' + this.mission.requiredPlayers);
     }
 };
 

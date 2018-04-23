@@ -53,11 +53,13 @@
         <td><label>Player 10</label></td>
         <td><input type="text" id="player_10_name_id" value="J"></td>
       </tr>
+      <tr>
+        <td colspan="2" align="center"><input type="button" id="start_button" onclick="handleStartButton()" value="Start!"></td>
+      </tr>
+      <tr>
+        <td colspan="2" align="center"><textarea id="output" readonly cols="40" rows="20"></textarea></td>
+      </tr>
     </table>
-
-    <br>
-
-    <input type="button" id="start_button" onclick="handleStartButton()" value="Start!"><br>
 
     <script>
         function handleStartButton() {
@@ -77,8 +79,20 @@
 
             if (Rules.readyForStart(game)) {
                 game.start();
-                alert('Check console');
+
+                print('The game has been started for ' + game.numberOfPlayers + ' players!');
+                print('Now you close your eyes and get to know each other...');
+                game.players.forEach(function(p) {
+                    print('Player ' + p.name + ' is ' + p.role.name);
+                });
+                print('...and the leader is... ' + game.leader.name + '! Good luck!..');
+                print('Mission ' + game.currentMissionNumber + ' starts... Players required : ' + game.mission.requiredPlayers);
             }
+        }
+
+        function print(line) {
+            document.getElementById("output").value += (line + '\n');
+            console.log(line);
         }
     </script>
 
