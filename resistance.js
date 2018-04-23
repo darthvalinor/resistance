@@ -7,6 +7,75 @@ var Rules = {
         For8plus: [3, 4, 4, 5, 5]
     },
 
+    getMission: function(missionNumber, numberOfPlayers) {
+        var requiredPlayers = 0;
+        if (numberOfPlayers == 5) {
+            requiredPlayers = this.Missions.For5[missionNumber - 1];
+        } else if (numberOfPlayers == 6) {
+            requiredPlayers = this.Missions.For6[missionNumber - 1];
+        } else if (numberOfPlayers == 7) {
+            requiredPlayers = this.Missions.For7[missionNumber - 1];
+        } else if (numberOfPlayers >= 8 && numberOfPlayers <= 10) {
+            requiredPlayers = this.Missions.For8plus[missionNumber - 1];
+        }
+        return new Mission(requiredPlayers);
+    },
+
+    Cards: {
+        NoConfidence: function() {
+            return new Card('NoConfidence', false);
+        },
+        StrongLeader: function() {
+            return new Card('StrongLeader', false);
+        },
+        Orator: function() {
+            return new Card('Orator', false);
+        },
+        Overheard: function() {
+            return new Card('Overheard', true);
+        },
+        KeepEye: function() {
+            return new Card('KeepEye', false);
+        },
+        TakeResponsibility: function() {
+            return new Card('TakeResponsibility', false);
+        },
+        NoCover: function() {
+            return new Card('NoCover', false);
+        },
+        OpenUp: function() {
+            return new Card('OpenUp', true);
+        },
+        CheckLeader: function() {
+            return new Card('CheckLeader', true);
+        }
+    },
+
+    getCards(numberOfPlayers) {
+        var cards = [
+            this.Cards.NoConfidence(),
+            this.Cards.StrongLeader(),
+            this.Cards.StrongLeader(),
+            this.Cards.Orator(),
+            this.Cards.KeepEye(),
+            this.Cards.KeepEye(),
+            this.Cards.TakeResponsibility()
+        ];
+        if (numberOfPlayers >= 7) {
+            cards.push(
+                this.Cards.NoConfidence(),
+                this.Cards.NoConfidence(),
+                this.Cards.Orator(),
+                this.Cards.Overheard(),
+                this.Cards.Overheard(),
+                this.Cards.NoCover(),
+                this.Cards.OpenUp(),
+                this.Cards.CheckLeader()
+            );
+        }
+        return cards;
+    },
+
     Roles: {
         Loyalist: function() {
             return new Role('Loyalist', false);
@@ -29,28 +98,6 @@ var Rules = {
         Spy: function() {
             return new Role('Spy', true);
         }
-    },
-
-    readyForStart: function(currentGame) {
-        if (currentGame.numberOfPlayers < 5 || currentGame.numberOfPlayers > 10) {
-            alert('Number of players must be from 5 up to 10!')
-            return false;
-        }
-        return true;
-    },
-
-    getMission: function(missionNumber, numberOfPlayers) {
-        var requiredPlayers = 0;
-        if (numberOfPlayers == 5) {
-            requiredPlayers = this.Missions.For5[missionNumber - 1];
-        } else if (numberOfPlayers == 6) {
-            requiredPlayers = this.Missions.For6[missionNumber - 1];
-        } else if (numberOfPlayers == 7) {
-            requiredPlayers = this.Missions.For7[missionNumber - 1];
-        } else if (numberOfPlayers >= 8 && numberOfPlayers <= 10) {
-            requiredPlayers = this.Missions.For8plus[missionNumber - 1];
-        }
-        return new Mission(requiredPlayers);
     },
 
     getRoles: function(numberOfPlayers) {
@@ -108,6 +155,14 @@ var Rules = {
             roles.push(this.Roles.Spy());
         }
         return roles;
+    },
+
+    readyForStart: function(currentGame) {
+        if (currentGame.numberOfPlayers < 5 || currentGame.numberOfPlayers > 10) {
+            alert('Number of players must be from 5 up to 10!')
+            return false;
+        }
+        return true;
     }
 
 };
@@ -119,6 +174,11 @@ var Mission = function(requiredPlayers) {
 var Role = function(name, isMafia) {
     this.name = name;
     this.isMafia = isMafia;
+}
+
+var Card = function(name, isReveal) {
+    this.name = name;
+    this.isReveal = isReveal;
 }
 
 var Player = function(name) {
