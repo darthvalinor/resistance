@@ -233,7 +233,7 @@ var Game = function(numberOfPlayers,players) {
         this.deck = Rules.getDeck(this.numberOfPlayers);
         Utils.shuffle(this.deck);
 
-        this.leader = players[Utils.randomInt(this.numberOfPlayers)];
+        this.leader = Utils.random(this.players);
         
         this.startMission();
     };
@@ -246,8 +246,7 @@ var Game = function(numberOfPlayers,players) {
         
         this.mission = Rules.getMission(this.currentMissionNumber, numberOfPlayers);
 
-        var cardsToTake = Rules.getNumberOfCards(numberOfPlayers);
-        for (var i = 0; i < cardsToTake; i++) {
+        for (var i = 0; i < Rules.getNumberOfCards(numberOfPlayers); i++) {
             this.leader.cardsToGive.push(this.deck.pop());
         }
 
@@ -283,15 +282,6 @@ var Game = function(numberOfPlayers,players) {
         }
         return true;
     };
-
-    //TODO not here
-    this.randomPlayer = function(excludes) {
-        var player;
-        do {
-            player = this.players[Utils.randomInt(numberOfPlayers)];
-        } while (excludes.indexOf(player)>-1);
-        return player;
-    };
 };
 
 var Utils = {
@@ -321,5 +311,13 @@ var Utils = {
 
     random: function(arr) {
         return arr[this.randomInt(arr.length)];
+    },
+
+    randomExcept: function(arr, except) {
+        var element;
+        do {
+            element = this.random(arr);
+        } while (except.indexOf(element) >- 1);
+        return element;
     }
 }

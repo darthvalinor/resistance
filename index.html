@@ -104,20 +104,12 @@
             var player;
             var card;
             do {
-                player = randomPlayer(game.players, cannotGetCard);
+                player = Utils.randomExcept(game.players, cannotGetCard);
                 card = Utils.random(game.leader.cardsToGive);
                 game.giveCard(card, player);
                 cannotGetCard.push(player);
             } while (game.leader.cardsToGive.length > 0);
             refreshView();
-        }
-
-        function randomPlayer(players, excludes) {
-            var player;
-            do {
-                player = players[Utils.randomInt(players.length)];
-            } while (excludes.indexOf(player)>-1);
-            return player;
         }
 
         function refreshView() {
