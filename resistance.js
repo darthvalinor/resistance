@@ -174,14 +174,6 @@ var Rules = {
         MissionStarts: 'MissionStarts',
         MissionInProgress: 'MissionInProgress',
         MissionResult: 'MissionResult'
-    },
-
-    readyForStart: function(currentGame) {
-        if (currentGame.numberOfPlayers < 5 || currentGame.numberOfPlayers > 10) {
-            alert('Number of players must be from 5 up to 10!')
-            return false;
-        }
-        return true;
     }
 
 };

@@ -86,6 +86,11 @@
         function startGame() {
             var numberOfPlayers = parseInt(document.getElementById('number_of_players_id').value);
 
+            if (numberOfPlayers < 5 || numberOfPlayers > 10) {
+                alert('Number of players must be from 5 up to 10!')
+                return;
+            }
+
             var players = [];
             for (var i = 0; i < numberOfPlayers; i++) {
                 players.push(new Player(document.getElementById('player_' + (i + 1) + '_name_id').value, i));
@@ -93,10 +98,9 @@
 
             game = new Game(numberOfPlayers, players);
 
-            if (Rules.readyForStart(game)) {
-                game.start();
-                refreshView();
-            }
+            game.start();
+
+            refreshView();
         }
 
         function giveCards() {
@@ -109,6 +113,7 @@
                 game.giveCard(card, player);
                 cannotGetCard.push(player);
             } while (game.leader.cardsToGive.length > 0);
+
             refreshView();
         }
 
@@ -120,28 +125,27 @@
             document.getElementById('mission_id').value = 'Mission ' + game.currentMissionNumber + ' for ' + game.mission.requiredPlayers;
 
             for (var i = 0; i < 10; i++) {
-                if (i <= game.numberOfPlayers) {
+                if (i < game.numberOfPlayers) {
+                    var p = game.players[i];
                     document.getElementsByClassName('player_' + (i + 1) + '_name_tr_class')[0].style.backgroundColor = 'PaleGreen';
+                    document.getElementById('player_' + (i + 1) + '_role_id').value = p.role.name;
+
+                    var cards = "";
+                    p.cardsToGive.forEach(function(c) {
+                        cards += c.name + " ";
+                    });
+                    p.cards.forEach(function(c) {
+                        cards += c.name + " ";
+                    });
+                    document.getElementById('player_' + (i + 1) + '_cards_id').value = cards;
                 } else {
                     document.getElementsByClassName('player_' + (i + 1) + '_name_tr_class')[0].style.backgroundColor = 'White';
+                    document.getElementById('player_' + (i + 1) + '_role_id').value = "";
+                    document.getElementById('player_' + (i + 1) + '_cards_id').value = "";
                 }
             }
 
             document.getElementsByClassName('player_' + (game.leader.id + 1) + '_name_tr_class')[0].style.backgroundColor = 'SkyBlue';
-
-            game.players.forEach(function(p) {
-                document.getElementById('player_' + (p.id + 1) + '_name_id').value = p.name;
-                document.getElementById('player_' + (p.id + 1) + '_role_id').value = p.role.name;
-
-                var cards = document.getElementById('player_' + (p.id + 1) + '_cards_id');
-                cards.value = "";
-                p.cardsToGive.forEach(function(c) {
-                    cards.value += c.name + " ";
-                });
-                p.cards.forEach(function(c) {
-                    cards.value += c.name + " ";
-                });
-            });
 
             document.getElementById('give_button').disabled = !(game.phase == Rules.Phases.MissionCards);
         }
