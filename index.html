@@ -10,55 +10,73 @@
 
     <table>
       <tr>
-        <td><label>Number of players</label></td>
+        <td><input type="button" id="start_button" onclick="startGame()" value="Start game for "></td>
         <td><input type="number" id="number_of_players_id" value="10"></td>
+        <td><input type="text" id="game_phase_id" readonly value = "New"></td>
+        <td><input type="text" id="mission_id" readonly value = "Want some mission?"></td>
       </tr>
       <tr class="player_1_name_tr_class">
         <td><label>Player 1</label></td>
         <td><input type="text" id="player_1_name_id" value="A"></td>
+        <td><input type="text" id="player_1_role_id" readonly></td>
+        <td><input type="text" id="player_1_cards_id" readonly></td>
       </tr>
       <tr class="player_2_name_tr_class">
         <td><label>Player 2</label></td>
         <td><input type="text" id="player_2_name_id" value="B"></td>
+        <td><input type="text" id="player_2_role_id" readonly></td>
+        <td><input type="text" id="player_2_cards_id" readonly></td>
       </tr>
       <tr class="player_3_name_tr_class">
         <td><label>Player 3</label></td>
         <td><input type="text" id="player_3_name_id" value="C"></td>
+        <td><input type="text" id="player_3_role_id" readonly></td>
+        <td><input type="text" id="player_3_cards_id" readonly></td>
       </tr>
       <tr class="player_4_name_tr_class">
         <td><label>Player 4</label></td>
         <td><input type="text" id="player_4_name_id" value="D"></td>
+        <td><input type="text" id="player_4_role_id" readonly></td>
+        <td><input type="text" id="player_4_cards_id" readonly></td>
       </tr>
       <tr class="player_5_name_tr_class">
         <td><label>Player 5</label></td>
         <td><input type="text" id="player_5_name_id" value="E"></td>
+        <td><input type="text" id="player_5_role_id" readonly></td>
+        <td><input type="text" id="player_5_cards_id" readonly></td>
       </tr>
       <tr class="player_6_name_tr_class">
         <td><label>Player 6</label></td>
         <td><input type="text" id="player_6_name_id" value="F"></td>
+        <td><input type="text" id="player_6_role_id" readonly></td>
+        <td><input type="text" id="player_6_cards_id" readonly></td>
       </tr>
       <tr class="player_7_name_tr_class">
         <td><label>Player 7</label></td>
         <td><input type="text" id="player_7_name_id" value="G"></td>
+        <td><input type="text" id="player_7_role_id" readonly></td>
+        <td><input type="text" id="player_7_cards_id" readonly></td>
       </tr>
       <tr class="player_8_name_tr_class">
         <td><label>Player 8</label></td>
         <td><input type="text" id="player_8_name_id" value="H"></td>
+        <td><input type="text" id="player_8_role_id" readonly></td>
+        <td><input type="text" id="player_8_cards_id" readonly></td>
       </tr>
       <tr class="player_9_name_tr_class">
         <td><label>Player 9</label></td>
         <td><input type="text" id="player_9_name_id" value="I"></td>
+        <td><input type="text" id="player_9_role_id" readonly></td>
+        <td><input type="text" id="player_9_cards_id" readonly></td>
       </tr>
       <tr class="player_10_name_tr_class">
         <td><label>Player 10</label></td>
         <td><input type="text" id="player_10_name_id" value="J"></td>
+        <td><input type="text" id="player_10_role_id" readonly></td>
+        <td><input type="text" id="player_10_cards_id" readonly></td>
       </tr>
       <tr>
-        <td><input type="button" id="start_button" onclick="startGame()" value="Start!"></td>
-        <td><input type="button" id="give_button" onclick="giveCards()" value="Give!"></td>
-      </tr>
-      <tr>
-        <td colspan="2" align="center"><textarea id="output" readonly cols="40" rows="20"></textarea></td>
+        <td><input type="button" id="give_button" onclick="giveCards()" value="Give randomly" disabled></td>
       </tr>
     </table>
 
@@ -70,51 +88,70 @@
 
             var players = [];
             for (var i = 0; i < numberOfPlayers; i++) {
-                players.push(new Player(document.getElementById('player_' + (i + 1) + '_name_id').value));
-                document.getElementsByClassName('player_' + (i + 1) + '_name_tr_class')[0].style.backgroundColor = 'green';
-            }
-
-            for (var i = numberOfPlayers; i < 10; i++) {
-                document.getElementsByClassName('player_' + (i + 1) + '_name_tr_class')[0].style.backgroundColor = 'white';
+                players.push(new Player(document.getElementById('player_' + (i + 1) + '_name_id').value, i));
             }
 
             game = new Game(numberOfPlayers, players);
 
             if (Rules.readyForStart(game)) {
                 game.start();
-
-                print('The game has been started for ' + game.numberOfPlayers + ' players!');
-                print('Now you close your eyes and get to know each other...');
-                game.players.forEach(function(p) {
-                    print('Player ' + p.name + ' is ' + p.role.name);
-                });
-                print('Mission ' + game.currentMissionNumber + ' starts... Players required : ' + game.mission.requiredPlayers);
-                print('...and the leader is... ' + game.leader.name + '! Good luck!..');
-                game.leader.cardsToGive.forEach(function(c) {
-                    print('The leader ' + game.leader.name + ' takes ' + c.name + ' from the deck');
-                });
+                refreshView();
             }
         }
 
         function giveCards() {
-            Utils.shuffle(game.leader.cardsToGive);
-
             var cannotGetCard = [game.leader];
             var player;
             var card;
             do {
-                player = game.randomPlayer(cannotGetCard);
-                card = game.leader.cardsToGive.pop();
-                player.cards.push(card);
+                player = randomPlayer(game.players, cannotGetCard);
+                card = Utils.random(game.leader.cardsToGive);
+                game.giveCard(card, player);
                 cannotGetCard.push(player);
-                print(player.name + ' gets ' + card.name);
             } while (game.leader.cardsToGive.length > 0);
+            refreshView();
         }
 
-        function print(line) {
-            var output = document.getElementById('output');
-            output.value += (line + '\n');
-            output.scrollTop = output.scrollHeight;
+        function randomPlayer(players, excludes) {
+            var player;
+            do {
+                player = players[Utils.randomInt(players.length)];
+            } while (excludes.indexOf(player)>-1);
+            return player;
+        }
+
+        function refreshView() {
+            document.getElementById('number_of_players_id').value = game.numberOfPlayers;
+
+            document.getElementById('game_phase_id').value = game.phase;
+
+            document.getElementById('mission_id').value = 'Mission ' + game.currentMissionNumber + ' for ' + game.mission.requiredPlayers;
+
+            for (var i = 0; i < 10; i++) {
+                if (i <= game.numberOfPlayers) {
+                    document.getElementsByClassName('player_' + (i + 1) + '_name_tr_class')[0].style.backgroundColor = 'PaleGreen';
+                } else {
+                    document.getElementsByClassName('player_' + (i + 1) + '_name_tr_class')[0].style.backgroundColor = 'White';
+                }
+            }
+
+            document.getElementsByClassName('player_' + (game.leader.id + 1) + '_name_tr_class')[0].style.backgroundColor = 'SkyBlue';
+
+            game.players.forEach(function(p) {
+                document.getElementById('player_' + (p.id + 1) + '_name_id').value = p.name;
+                document.getElementById('player_' + (p.id + 1) + '_role_id').value = p.role.name;
+
+                var cards = document.getElementById('player_' + (p.id + 1) + '_cards_id');
+                cards.value = "";
+                p.cardsToGive.forEach(function(c) {
+                    cards.value += c.name + " ";
+                });
+                p.cards.forEach(function(c) {
+                    cards.value += c.name + " ";
+                });
+            });
+
+            document.getElementById('give_button').disabled = !(game.phase == Rules.Phases.MissionCards);
         }
     </script>
 

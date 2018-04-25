@@ -167,6 +167,15 @@ var Rules = {
         return roles;
     },
 
+    Phases: {
+        New: 'New',
+        MissionCards: 'MissionCards',
+        MissionVote: 'MissionVote',
+        MissionStarts: 'MissionStarts',
+        MissionInProgress: 'MissionInProgress',
+        MissionResult: 'MissionResult'
+    },
+
     readyForStart: function(currentGame) {
         if (currentGame.numberOfPlayers < 5 || currentGame.numberOfPlayers > 10) {
             alert('Number of players must be from 5 up to 10!')
@@ -192,22 +201,28 @@ var Card = function(name, isReveal) {
     this.used = false;
 }
 
-var Player = function(name) {
+var Player = function(name, id) {
     this.name = name;
+    this.id = id;
     this.role = null;
     this.cards = [];
+    this.cardsToTake = [];
     this.cardsToGive = [];
 }
 
 var Game = function(numberOfPlayers,players) {
     this.numberOfPlayers = numberOfPlayers;
     this.players = players;
+    this.phase = Rules.Phases.New;
     this.currentMissionNumber = 0;
     this.mission = null;
     this.leader = null;
+    this.leaderCount = 0;
     this.deck = null;
 
     this.start = function() {
+        if (this.phase != Rules.Phases.New) return;
+
         var roles = Rules.getRoles(this.numberOfPlayers);
 
         Utils.shuffle(roles);
@@ -220,10 +235,13 @@ var Game = function(numberOfPlayers,players) {
 
         this.leader = players[Utils.randomInt(this.numberOfPlayers)];
         
-        this.startNewMission();
+        this.startMission();
     };
 
-    this.startNewMission = function() {
+    this.startMission = function() {
+        if (!(this.phase == Rules.Phases.New
+          || (this.phase == Rules.Phases.MissionResult && this.currentMissionNumber < 5))) return;
+
         this.currentMissionNumber++;
         
         this.mission = Rules.getMission(this.currentMissionNumber, numberOfPlayers);
@@ -232,6 +250,38 @@ var Game = function(numberOfPlayers,players) {
         for (var i = 0; i < cardsToTake; i++) {
             this.leader.cardsToGive.push(this.deck.pop());
         }
+
+        this.phase = Rules.Phases.MissionCards;
+    };
+
+    this.giveCard = function(card, player) {
+        if (this.phase != Rules.Phases.MissionCards
+            || this.leader.cardsToGive.indexOf(card) < 0) return;
+
+        Utils.remove(this.leader.cardsToGive, card);
+
+        if (card.name == 'TakeResponsibility' && this.othersHaveNoCards(player)) {
+            card = this.deck.pop();
+        }
+        player.cardsToTake.push(card);
+
+        if (this.leader.cardsToGive == 0) {
+            this.leaderCount = 1;
+            this.phase = Rules.Phases.MissionVote;
+            this.players.forEach(function(p) {
+                p.cards = p.cards.concat(p.cardsToTake);
+                p.cardsToTake = [];
+            });
+        }
+    };
+
+    this.othersHaveNoCards = function (except) {
+        for (var i = 0; i < this.numberOfPlayers; i++) {
+            if (this.players[i] != except && this.players[i].cards.length > 0) {
+                return false;
+            }
+        }
+        return true;
     };
 
     //TODO not here
@@ -241,7 +291,7 @@ var Game = function(numberOfPlayers,players) {
             player = this.players[Utils.randomInt(numberOfPlayers)];
         } while (excludes.indexOf(player)>-1);
         return player;
-    }
+    };
 };
 
 var Utils = {
@@ -260,5 +310,16 @@ var Utils = {
             arr[j] = box;
         }
         return arr;
+    },
+
+    remove: function(arr, e) {
+        var index = arr.indexOf(e);
+        if (index >= 0) {
+          arr.splice(index, 1);
+        }
+    },
+
+    random: function(arr) {
+        return arr[this.randomInt(arr.length)];
     }
 }
