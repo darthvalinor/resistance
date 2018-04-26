@@ -184,14 +184,17 @@
         }
 
         function nominate() {
-            var checkedPlayers = getCheckedPlayers();
+            var nominees = getCheckedPlayers();
 
-            if (checkedPlayers.length != game.currentMission().requiredPlayers) {
-                alert(checkedPlayers.length + " people have been nominated, but required " + game.currentMission().requiredPlayers + "!");
+            if (nominees.length != game.currentMission().requiredPlayers) {
+                alert(nominees.length + " people have been nominated, but required " + game.currentMission().requiredPlayers + "!");
                 return;
             }
 
-            alert("When it's done");
+            if (confirm("Are you sure?")) {
+                game.nominate(nominees);
+                alert("Coming soon...");
+            }
 
             refreshView();
         }

@@ -295,7 +295,7 @@ var Game = function(numberOfPlayers,players) {
         }
     };
 
-    this.nominate = function() {
+    this.nominate = function(nominees) {
 
     };
 };
