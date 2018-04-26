@@ -7,18 +7,22 @@ var Rules = {
         For8plus: [3, 4, 4, 5, 5]
     },
 
-    getMission: function(missionNumber, numberOfPlayers) {
-        var requiredPlayers = 0;
-        if (numberOfPlayers == 5) {
-            requiredPlayers = this.Missions.For5[missionNumber - 1];
-        } else if (numberOfPlayers == 6) {
-            requiredPlayers = this.Missions.For6[missionNumber - 1];
-        } else if (numberOfPlayers == 7) {
-            requiredPlayers = this.Missions.For7[missionNumber - 1];
-        } else if (numberOfPlayers >= 8 && numberOfPlayers <= 10) {
-            requiredPlayers = this.Missions.For8plus[missionNumber - 1];
+    getMissions: function(numberOfPlayers) {
+        var missions = [];
+        for (var i = 0; i < 5; i++) {
+            var requiredPlayers = 0;
+            if (numberOfPlayers == 5) {
+                requiredPlayers = this.Missions.For5[i];
+            } else if (numberOfPlayers == 6) {
+                requiredPlayers = this.Missions.For6[i];
+            } else if (numberOfPlayers == 7) {
+                requiredPlayers = this.Missions.For7[i];
+            } else if (numberOfPlayers >= 8 && numberOfPlayers <= 10) {
+                requiredPlayers = this.Missions.For8plus[i];
+            }
+            missions.push(new Mission(requiredPlayers));
         }
-        return new Mission(requiredPlayers);
+        return missions;
     },
 
     Cards: {
@@ -180,6 +184,8 @@ var Rules = {
 
 var Mission = function(requiredPlayers) {
     this.requiredPlayers = requiredPlayers;
+    this.participants = [];
+    this.result = false;
 }
 
 var Role = function(name, isMafia) {
@@ -206,8 +212,8 @@ var Game = function(numberOfPlayers,players) {
     this.numberOfPlayers = numberOfPlayers;
     this.players = players;
     this.phase = Rules.Phases.New;
-    this.currentMissionNumber = 0;
-    this.mission = null;
+    this.missionNumber = 0;
+    this.missions = [];
     this.leader = null;
     this.leaderCount = 0;
     this.nominated = [];
@@ -228,22 +234,26 @@ var Game = function(numberOfPlayers,players) {
 
         this.leader = Utils.random(this.players);
         
+        this.missions = Rules.getMissions(numberOfPlayers);
+        
         this.startMission();
     };
 
     this.startMission = function() {
         if (!(this.phase == Rules.Phases.New
-          || (this.phase == Rules.Phases.MissionResult && this.currentMissionNumber < 5))) return;
+          || (this.phase == Rules.Phases.MissionResult && this.missionNumber < 5))) return;
 
-        this.currentMissionNumber++;
-        
-        this.mission = Rules.getMission(this.currentMissionNumber, numberOfPlayers);
+        this.missionNumber++;
 
         for (var i = 0; i < Rules.getNumberOfCards(numberOfPlayers); i++) {
             this.leader.cardsToGive.push(this.deck.pop());
         }
 
         this.phase = Rules.Phases.MissionCards;
+    };
+
+    this.currentMission = function() {
+        return this.missions[this.missionNumber-1];
     };
 
     this.giveCard = function(card, player) {
@@ -286,7 +296,7 @@ var Game = function(numberOfPlayers,players) {
     };
 
     this.nominate = function() {
-        
+
     };
 };
 

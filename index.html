@@ -15,7 +15,7 @@
         <td><input type="number" id="number_of_players_id" value="10"></td>
         <td><input type="text" id="game_phase_id" readonly value = "New"></td>
         <td></td>
-        <td><input type="text" id="mission_id" readonly value = "Want some mission?"></td>
+        <td></td>
       </tr>
       <tr class="player_1_name_tr_class">
         <td><label>Player 1</label></td>
@@ -107,6 +107,39 @@
       </tr>
     </table>
 
+    <table>
+      <tr class="mission_1_tr_class">
+        <td><label>Mission 1</label></td>
+        <td><input type="number" id="mission_1_required_players_id" value="" disabled></td>
+        <td><input type="text" id="mission_1_participants_id" value="" disabled></td>
+        <td><input type="checkbox" id="mission_1_result_id" value="" disabled></td>
+      </tr>
+      <tr class="mission_2_tr_class">
+        <td><label>Mission 2</label></td>
+        <td><input type="number" id="mission_2_required_players_id" value="" disabled></td>
+        <td><input type="text" id="mission_2_participants_id" value="" disabled></td>
+        <td><input type="checkbox" id="mission_2_result_id" value="" disabled></td>
+      </tr>
+      <tr class="mission_3_tr_class">
+        <td><label>Mission 3</label></td>
+        <td><input type="number" id="mission_3_required_players_id" value="" disabled></td>
+        <td><input type="text" id="mission_3_participants_id" value="" disabled></td>
+        <td><input type="checkbox" id="mission_3_result_id" value="" disabled></td>
+      </tr>
+      <tr class="mission_4_tr_class">
+        <td><label>Mission 4</label></td>
+        <td><input type="number" id="mission_4_required_players_id" value="" disabled></td>
+        <td><input type="text" id="mission_4_participants_id" value="" disabled></td>
+        <td><input type="checkbox" id="mission_4_result_id" value="" disabled></td>
+      </tr>
+      <tr class="mission_5_tr_class">
+        <td><label>Mission 5</label></td>
+        <td><input type="number" id="mission_5_required_players_id" value="" disabled></td>
+        <td><input type="text" id="mission_5_participants_id" value="" disabled></td>
+        <td><input type="checkbox" id="mission_5_result_id" value="" disabled></td>
+      </tr>
+    </table>
+
     <script>
         var game = null;
 
@@ -153,8 +186,8 @@
         function nominate() {
             var checkedPlayers = getCheckedPlayers();
 
-            if (checkedPlayers.length != game.mission.requiredPlayers) {
-                alert("Nominated + " + checkedPlayers.length + " people, but required " + game.mission.requiredPlayers + "!");
+            if (checkedPlayers.length != game.currentMission().requiredPlayers) {
+                alert(checkedPlayers.length + " people have been nominated, but required " + game.currentMission().requiredPlayers + "!");
                 return;
             }
 
@@ -167,8 +200,6 @@
             document.getElementById('number_of_players_id').value = game.numberOfPlayers;
 
             document.getElementById('game_phase_id').value = game.phase;
-
-            document.getElementById('mission_id').value = 'Mission ' + game.currentMissionNumber + ' for ' + game.mission.requiredPlayers + 'people';
 
             for (var i = 0; i < 10; i++) {
                 if (i < game.numberOfPlayers) {
@@ -201,6 +232,17 @@
             document.getElementById('give_button').disabled = !(game.phase == Rules.Phases.MissionCards);
 
             document.getElementById('nominate_button').disabled = !(game.phase == Rules.Phases.MissionVote);
+
+            for (var i = 0; i < 5; i++) {
+                document.getElementById('mission_' + (i + 1) + '_required_players_id').value = game.missions[i].requiredPlayers;
+                document.getElementById('mission_' + (i + 1) + '_participants_id').value = game.missions[i].participants;
+                document.getElementById('mission_' + (i + 1) + '_result_id').checked = game.missions[i].result;
+                if (i == game.missionNumber - 1) {
+                    document.getElementsByClassName('mission_' + (i + 1) + '_tr_class')[0].style.backgroundColor = 'PaleGreen';
+                } else {
+                    document.getElementsByClassName('mission_' + (i + 1) + '_tr_class')[0].style.backgroundColor = 'White';
+                }
+            }
         }
 
         function getSelectedPlayer() {
