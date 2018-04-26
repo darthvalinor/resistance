@@ -210,6 +210,7 @@ var Game = function(numberOfPlayers,players) {
     this.mission = null;
     this.leader = null;
     this.leaderCount = 0;
+    this.nominated = [];
     this.deck = null;
 
     this.start = function() {
@@ -248,7 +249,7 @@ var Game = function(numberOfPlayers,players) {
     this.giveCard = function(card, player) {
         if (this.phase != Rules.Phases.MissionCards) return;
         if (this.leader.cardsToGive.indexOf(card) < 0) return;
-        if (player.cardToTake != null) return;
+        if (player.cardToTake) return;
 
         Utils.remove(this.leader.cardsToGive, card);
 
@@ -282,6 +283,10 @@ var Game = function(numberOfPlayers,players) {
                 }
             });
         }
+    };
+
+    this.nominate = function() {
+        
     };
 };
 
