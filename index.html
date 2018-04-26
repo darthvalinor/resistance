@@ -13,70 +13,85 @@
         <td><input type="button" id="start_button" onclick="startGame()" value="Start game for "></td>
         <td><input type="number" id="number_of_players_id" value="10"></td>
         <td><input type="text" id="game_phase_id" readonly value = "New"></td>
+        <td></td>
         <td><input type="text" id="mission_id" readonly value = "Want some mission?"></td>
       </tr>
       <tr class="player_1_name_tr_class">
         <td><label>Player 1</label></td>
         <td><input type="text" id="player_1_name_id" value="A"></td>
         <td><input type="text" id="player_1_role_id" readonly></td>
+        <td><input type="radio" name="selected" id="player_1_selected_id"></td>
         <td><input type="text" id="player_1_cards_id" readonly></td>
       </tr>
       <tr class="player_2_name_tr_class">
         <td><label>Player 2</label></td>
         <td><input type="text" id="player_2_name_id" value="B"></td>
         <td><input type="text" id="player_2_role_id" readonly></td>
+        <td><input type="radio" name="selected" id="player_2_selected_id"></td>
         <td><input type="text" id="player_2_cards_id" readonly></td>
       </tr>
       <tr class="player_3_name_tr_class">
         <td><label>Player 3</label></td>
         <td><input type="text" id="player_3_name_id" value="C"></td>
         <td><input type="text" id="player_3_role_id" readonly></td>
+        <td><input type="radio" name="selected" id="player_3_selected_id"></td>
         <td><input type="text" id="player_3_cards_id" readonly></td>
       </tr>
       <tr class="player_4_name_tr_class">
         <td><label>Player 4</label></td>
         <td><input type="text" id="player_4_name_id" value="D"></td>
         <td><input type="text" id="player_4_role_id" readonly></td>
+        <td><input type="radio" name="selected" id="player_4_selected_id"></td>
         <td><input type="text" id="player_4_cards_id" readonly></td>
       </tr>
       <tr class="player_5_name_tr_class">
         <td><label>Player 5</label></td>
         <td><input type="text" id="player_5_name_id" value="E"></td>
         <td><input type="text" id="player_5_role_id" readonly></td>
+        <td><input type="radio" name="selected" id="player_5_selected_id"></td>
         <td><input type="text" id="player_5_cards_id" readonly></td>
       </tr>
       <tr class="player_6_name_tr_class">
         <td><label>Player 6</label></td>
         <td><input type="text" id="player_6_name_id" value="F"></td>
         <td><input type="text" id="player_6_role_id" readonly></td>
+        <td><input type="radio" name="selected" id="player_6_selected_id"></td>
         <td><input type="text" id="player_6_cards_id" readonly></td>
       </tr>
       <tr class="player_7_name_tr_class">
         <td><label>Player 7</label></td>
         <td><input type="text" id="player_7_name_id" value="G"></td>
         <td><input type="text" id="player_7_role_id" readonly></td>
+        <td><input type="radio" name="selected" id="player_7_selected_id"></td>
         <td><input type="text" id="player_7_cards_id" readonly></td>
       </tr>
       <tr class="player_8_name_tr_class">
         <td><label>Player 8</label></td>
         <td><input type="text" id="player_8_name_id" value="H"></td>
         <td><input type="text" id="player_8_role_id" readonly></td>
+        <td><input type="radio" name="selected" id="player_8_selected_id"></td>
         <td><input type="text" id="player_8_cards_id" readonly></td>
       </tr>
       <tr class="player_9_name_tr_class">
         <td><label>Player 9</label></td>
         <td><input type="text" id="player_9_name_id" value="I"></td>
         <td><input type="text" id="player_9_role_id" readonly></td>
+        <td><input type="radio" name="selected" id="player_9_selected_id"></td>
         <td><input type="text" id="player_9_cards_id" readonly></td>
       </tr>
       <tr class="player_10_name_tr_class">
         <td><label>Player 10</label></td>
         <td><input type="text" id="player_10_name_id" value="J"></td>
         <td><input type="text" id="player_10_role_id" readonly></td>
+        <td><input type="radio" name="selected" id="player_10_selected_id"></td>
         <td><input type="text" id="player_10_cards_id" readonly></td>
       </tr>
       <tr>
-        <td><input type="button" id="give_button" onclick="giveCards()" value="Give randomly" disabled></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><input type="button" id="give_button" onclick="giveCard()" value="Give" disabled></td>
       </tr>
     </table>
 
@@ -103,16 +118,22 @@
             refreshView();
         }
 
-        function giveCards() {
-            var cannotGetCard = [game.leader];
-            var player;
-            var card;
-            do {
-                player = Utils.randomExcept(game.players, cannotGetCard);
-                card = Utils.random(game.leader.cardsToGive);
-                game.giveCard(card, player);
-                cannotGetCard.push(player);
-            } while (game.leader.cardsToGive.length > 0);
+        function giveCard() {
+            var selectedPlayer = getSelectedPlayer();
+
+            if (selectedPlayer == game.leader) {
+                alert("You can't give card to yourself");
+                return;
+            }
+
+            if (selectedPlayer.cardToTake) {
+                alert(selectedPlayer.name + " already got a card");
+                return;
+            }
+
+            game.giveCard(game.leader.cardsToGive[0], selectedPlayer);
+
+            document.getElementById('player_' + (selectedPlayer.id + 1) + '_selected_id').checked = false;
 
             refreshView();
         }
@@ -137,17 +158,29 @@
                     p.cards.forEach(function(c) {
                         cards += c.name + " ";
                     });
+                    cards += (p.cardToTake && p.cardToTake.name) || "";
                     document.getElementById('player_' + (i + 1) + '_cards_id').value = cards;
+                    document.getElementById('player_' + (i + 1) + '_selected_id').disabled = false;
                 } else {
                     document.getElementsByClassName('player_' + (i + 1) + '_name_tr_class')[0].style.backgroundColor = 'White';
                     document.getElementById('player_' + (i + 1) + '_role_id').value = "";
                     document.getElementById('player_' + (i + 1) + '_cards_id').value = "";
+                    document.getElementById('player_' + (i + 1) + '_selected_id').disabled = true;
                 }
             }
 
             document.getElementsByClassName('player_' + (game.leader.id + 1) + '_name_tr_class')[0].style.backgroundColor = 'SkyBlue';
 
             document.getElementById('give_button').disabled = !(game.phase == Rules.Phases.MissionCards);
+        }
+
+        function getSelectedPlayer() {
+            for (var i = 0; i < 10; i++) {
+                if (document.getElementById('player_' + (i + 1) + '_selected_id').checked) {
+                    return game.players[i];
+                }
+            }
+            return null;
         }
     </script>
 

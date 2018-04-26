@@ -198,7 +198,7 @@ var Player = function(name, id) {
     this.id = id;
     this.role = null;
     this.cards = [];
-    this.cardsToTake = [];
+    this.cardToTake = null;
     this.cardsToGive = [];
 }
 
@@ -246,23 +246,19 @@ var Game = function(numberOfPlayers,players) {
     };
 
     this.giveCard = function(card, player) {
-        if (this.phase != Rules.Phases.MissionCards
-            || this.leader.cardsToGive.indexOf(card) < 0) return;
+        if (this.phase != Rules.Phases.MissionCards) return;
+        if (this.leader.cardsToGive.indexOf(card) < 0) return;
+        if (player.cardToTake != null) return;
 
         Utils.remove(this.leader.cardsToGive, card);
 
         if (card.name == 'TakeResponsibility' && this.othersHaveNoCards(player)) {
             card = this.deck.pop();
         }
-        player.cardsToTake.push(card);
+        player.cardToTake = card;
 
         if (this.leader.cardsToGive == 0) {
-            this.leaderCount = 1;
-            this.phase = Rules.Phases.MissionVote;
-            this.players.forEach(function(p) {
-                p.cards = p.cards.concat(p.cardsToTake);
-                p.cardsToTake = [];
-            });
+            this.startVote()
         }
     };
 
@@ -273,6 +269,19 @@ var Game = function(numberOfPlayers,players) {
             }
         }
         return true;
+    };
+
+    this.startVote = function() {
+        this.leaderCount++;
+        if (this.leaderCount == 1) {
+            this.phase = Rules.Phases.MissionVote;
+            this.players.forEach(function(p) {
+                if (p.cardToTake) {
+                    p.cards.push(p.cardToTake);
+                    p.cardToTake = null;
+                }
+            });
+        }
     };
 };
 
