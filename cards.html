@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Resistance Action Cards Deck</title>
+</head>
+<body>
+    <form id="main_form">
+    <script src="resistance-rules.js"></script>
+    <script src="resistance-utils.js"></script>
+
+    <table>
+      <tr>
+        <td><input type="button" id="start_button" onclick="start()" value="Shuffle deck for"></td>
+        <td><input type="number" id="number_of_players_id" value="10"></td>
+      </tr>
+      <tr>
+        <td><label>Number of cards left</label></td>
+        <td><input type="text" id="number_of_cards_id" value="0" readonly></td>
+      </tr>
+      <tr>
+        <td><input type="button" id="get_button" onclick="getCard()" value="Get next card" disabled></td>
+        <td><input type="text" id="card_name_id" value=""></td>
+      </tr>
+    </table>
+    <textarea id="card_description_id" readonly cols="40" rows="20"></textarea>
+
+    <script>
+        var numberOfPlayers = 0;
+
+        var deck = null;
+
+        var currentCard = null;
+
+        function start() {
+            var inputNumberOfPlayers = parseInt(document.getElementById('number_of_players_id').value);
+
+            if (inputNumberOfPlayers < 5 || inputNumberOfPlayers > 10) {
+                alert('Number of players must be from 5 up to 10!')
+                return;
+            }
+
+            numberOfPlayers = inputNumberOfPlayers;
+
+            deck = Rules.getDeck(numberOfPlayers);
+            Utils.shuffle(this.deck);
+
+            currentCard = null;
+
+            refreshView();
+        }
+
+        function getCard() {
+            currentCard = deck.pop();
+
+            refreshView();
+        }
+
+        function refreshView() {
+            document.getElementById('number_of_players_id').value = numberOfPlayers;
+            document.getElementById('number_of_cards_id').value = deck.length;
+
+            document.getElementById('start_button').disabled = !!deck.length;
+            document.getElementById('get_button').disabled = !deck.length;
+
+            if (currentCard) {
+                document.getElementById("card_name_id").value = currentCard.name;
+                document.getElementById("card_description_id").value = currentCard.description;
+            } else {
+                document.getElementById("card_name_id").value = "";
+                document.getElementById("card_description_id").value = "";
+            }
+        }
+    </script>
+
+    </form>
+</body>
+</html>

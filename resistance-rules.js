@@ -27,31 +27,31 @@ var Rules = {
 
     Cards: {
         NoConfidence: function() {
-            return new Card('NoConfidence', false);
+            return new Card('No confidence', 'You can reset an accepted nomination', false);
         },
         StrongLeader: function() {
-            return new Card('StrongLeader', false);
+            return new Card('Strong leader', 'You can take away the leadership', false);
         },
         Orator: function() {
-            return new Card('Orator', false);
+            return new Card('Orator', 'You vote first and have influence', false);
         },
         Overheard: function() {
-            return new Card('Overheard', true);
+            return new Card('Overheard', 'You can make a neighbor reveal', true);
         },
         KeepEye: function() {
-            return new Card('KeepEye', false);
+            return new Card('Keep eye', 'You can find out what someone played', false);
         },
         TakeResponsibility: function() {
-            return new Card('TakeResponsibility', false);
+            return new Card("Take responsibility", "You can take away someone's card", false);
         },
         NoCover: function() {
-            return new Card('NoCover', false);
+            return new Card('No cover', 'You can make someone play card open', false);
         },
         OpenUp: function() {
-            return new Card('OpenUp', true);
+            return new Card('Open up', 'Leader makes you reveal to someone', true);
         },
         CheckLeader: function() {
-            return new Card('CheckLeader', true);
+            return new Card('Check leader', 'Leader must reveal to someone', true);
         }
     },
 
@@ -193,8 +193,9 @@ var Role = function(name, isMafia) {
     this.isMafia = isMafia;
 }
 
-var Card = function(name, isReveal) {
+var Card = function(name, description, isReveal) {
     this.name = name;
+    this.description = description;
     this.isReveal = isReveal;
     this.used = false;
 }
