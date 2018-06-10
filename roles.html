@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Resistance action cards deck</title>
+    <title>Resistance roles deck</title>
 </head>
 <body>
     <form id="main_form">
@@ -11,7 +11,7 @@
 
     <table>
       <tr>
-        <td><input type="button" id="start_button" onclick="start()" value="Shuffle deck for"></td>
+        <td><input type="button" id="start_button" onclick="start()" value="Shuffle roles for"></td>
         <td><input type="number" id="number_of_players_id" value="10"></td>
       </tr>
       <tr>
@@ -22,13 +22,17 @@
         <td><input type="button" id="get_button" onclick="getCard()" value="Get card" disabled></td>
         <td><input type="text" id="card_name_id" value=""></td>
       </tr>
+      <tr>
+        <td><input type="button" id="hide_button" onclick="hideCard()" value="Hide card" disabled></td>
+        <td></td>
+      </tr>
     </table>
     <textarea id="card_description_id" readonly cols="40" rows="3"></textarea>
 
     <script>
         var numberOfPlayers = 0;
 
-        var deck = null;
+        var roles = null;
 
         var currentCard = null;
 
@@ -42,8 +46,8 @@
 
             numberOfPlayers = inputNumberOfPlayers;
 
-            deck = Rules.getDeck(numberOfPlayers);
-            Utils.shuffle(deck);
+            roles = Rules.getRoles(numberOfPlayers);
+            Utils.shuffle(roles);
 
             currentCard = null;
 
@@ -51,17 +55,24 @@
         }
 
         function getCard() {
-            currentCard = deck.pop();
+            currentCard = roles.pop();
+
+            refreshView();
+        }
+
+        function hideCard() {
+            currentCard = null;
 
             refreshView();
         }
 
         function refreshView() {
             document.getElementById('number_of_players_id').value = numberOfPlayers;
-            document.getElementById('number_of_cards_id').value = deck.length;
+            document.getElementById('number_of_cards_id').value = roles.length;
 
-            document.getElementById('start_button').disabled = !!deck.length;
-            document.getElementById('get_button').disabled = !deck.length;
+            document.getElementById('start_button').disabled = !!roles.length;
+            document.getElementById('get_button').disabled = !roles.length || !!currentCard;
+            document.getElementById('hide_button').disabled = !currentCard;
 
             if (currentCard) {
                 document.getElementById("card_name_id").value = currentCard.name;

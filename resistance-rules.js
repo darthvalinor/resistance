@@ -92,25 +92,25 @@ var Rules = {
 
     Roles: {
         Loyalist: function() {
-            return new Role('Loyalist', false);
+            return new Role('Loyalist', 'You are just a normal guy who knows nothing', false);
         },
         Merlin: function() {
-            return new Role('Merlin', false);
+            return new Role('Merlin', 'You will see Morgana and Assassin (and Spy)', false);
         },
         Percival: function() {
-            return new Role('Percival', false);
+            return new Role('Percival', 'You will see Merlin and Morgana', false);
         },
         Mordred: function() {
-            return new Role('Mordred', true);
+            return new Role('Mordred', "Merlin won't see you", true);
         },
         Morgana: function() {
-            return new Role('Morgana', true);
+            return new Role('Morgana', 'Percival will see you and Merlin', true);
         },
         Assassin: function() {
-            return new Role('Assassin', true);
+            return new Role('Assassin', 'Merlin will see you, but you can kill him', true);
         },
         Spy: function() {
-            return new Role('Spy', true);
+            return new Role('Spy', 'Merlin will see you', true);
         }
     },
 
@@ -188,8 +188,9 @@ var Mission = function(requiredPlayers) {
     this.result = false;
 }
 
-var Role = function(name, isMafia) {
+var Role = function(name, description, isMafia) {
     this.name = name;
+    this.description = description;
     this.isMafia = isMafia;
 }
 
