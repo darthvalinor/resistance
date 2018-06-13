@@ -200,12 +200,3 @@ var Card = function(name, description, isReveal) {
     this.isReveal = isReveal;
     this.used = false;
 }
-
-var Player = function(name, id) {
-    this.name = name;
-    this.id = id;
-    this.role = null;
-    this.cards = [];
-    this.cardToTake = null;
-    this.cardsToGive = [];
-}

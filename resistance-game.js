@@ -89,3 +89,12 @@ var Game = function(numberOfPlayers,players) {
 
     };
 }
+
+var Player = function(name, id) {
+    this.name = name;
+    this.id = id;
+    this.role = null;
+    this.cards = [];
+    this.cardToTake = null;
+    this.cardsToGive = [];
+}

@@ -24,7 +24,7 @@
       </tr>
       <tr>
         <td><input type="button" id="hide_button" onclick="hideCard()" value="Hide card" disabled></td>
-        <td></td>
+        <td><label id="leader_id" hidden>You are the LEADER!</label></td>
       </tr>
     </table>
     <textarea id="card_description_id" readonly cols="40" rows="3"></textarea>
@@ -35,6 +35,8 @@
         var roles = null;
 
         var currentCard = null;
+
+        var leaderNumber = -1;
 
         function start() {
             var inputNumberOfPlayers = parseInt(document.getElementById('number_of_players_id').value);
@@ -48,6 +50,8 @@
 
             roles = Rules.getRoles(numberOfPlayers);
             Utils.shuffle(roles);
+
+            leaderNumber = Utils.randomInt(numberOfPlayers);
 
             currentCard = null;
 
@@ -73,6 +77,8 @@
             document.getElementById('start_button').disabled = !!roles.length;
             document.getElementById('get_button').disabled = !roles.length || !!currentCard;
             document.getElementById('hide_button').disabled = !currentCard;
+
+            document.getElementById('leader_id').hidden = !currentCard || roles.length != leaderNumber;
 
             if (currentCard) {
                 document.getElementById("card_name_id").value = currentCard.name;
