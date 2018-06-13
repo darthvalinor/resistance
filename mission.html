@@ -41,13 +41,18 @@
 
         var mission = null;
 
+        var missionFinished = false;
+
+        var missionResult = "";
+
         var playedCards = [];
 
         var playerIsChoosing = false;
 
         function start() {
             numberOfPlayers = 0;
-            document.getElementById('mission_result_id').value = "";
+            missionFinished = false;
+            missionResult = "";
             playedCards = [];
 
             var inputNumberOfPlayers = parseInt(document.getElementById('number_of_players_id').value);
@@ -94,7 +99,9 @@
         function showCards() {
             Utils.shuffle(playedCards);
 
-            var missionResult = "";
+            missionFinished = true;
+
+            missionResult = "";
             for (white of playedCards) {
                 if (white) {
                     missionResult += "White\n";
@@ -102,18 +109,25 @@
                     missionResult += "Black!\n";
                 }
             }
-            document.getElementById('mission_result_id').value = missionResult;
+
+            playedCards = [];
+
+            refreshView();
         }
 
         function refreshView() {
             document.getElementById('number_of_players_id').value = numberOfPlayers;
             document.getElementById('number_of_played_id').value = playedCards.length;
 
-            document.getElementById('get_cards_id').disabled = playerIsChoosing || playedCards.length == numberOfPlayers;
+            document.getElementById('start_button').disabled = !missionFinished;
+
+            document.getElementById('get_cards_id').disabled = playerIsChoosing || playedCards.length == numberOfPlayers || missionFinished;
             document.getElementById('play_black_id').disabled = !playerIsChoosing;
             document.getElementById('play_white_id').disabled = !playerIsChoosing;
 
             document.getElementById('show_cards_id').disabled = playedCards.length != numberOfPlayers;
+
+            document.getElementById('mission_result_id').value = missionResult;
         }
     </script>
 

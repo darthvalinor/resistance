@@ -74,7 +74,7 @@
             document.getElementById('number_of_players_id').value = numberOfPlayers;
             document.getElementById('number_of_cards_id').value = roles.length;
 
-            document.getElementById('start_button').disabled = !!roles.length;
+            document.getElementById('start_button').disabled = !!roles.length || !!currentCard;
             document.getElementById('get_button').disabled = !roles.length || !!currentCard;
             document.getElementById('hide_button').disabled = !currentCard;
 
