@@ -33,5 +33,10 @@ var Utils = {
             element = this.random(arr);
         } while (except.indexOf(element) >- 1);
         return element;
+    },
+
+    sleep: function(time) {
+        return new Promise((resolve) => setTimeout(resolve, time));
     }
+
 }

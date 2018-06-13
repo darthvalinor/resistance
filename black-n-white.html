@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Black & White</title>
+</head>
+<body>
+    <form id="main_form">
+    <script src="resistance-rules.js"></script>
+    <script src="resistance-utils.js"></script>
+
+    <input type="button" id="get_cards_button" onclick="getCards()" value="Get cards">
+    <input type="button" id="play_black_button" onclick="play('black')" value="Black" disabled>
+    <input type="button" id="play_white_button" onclick="play('white')" value="White" disabled>
+    <br><br>
+    <input type="button" id="show_cards_button" onclick="showCard()" value="Show card" disabled>
+    <input type="button" id="hide_button" onclick="hideCard()" value="Hide card" disabled>
+    <br><br>
+    <label id="black_id" hidden>BLACK</label><label id="white_id" hidden>WHITE</label>
+
+    <script>
+        var playedCard = null;
+
+        function getCards() {
+            document.getElementById('get_cards_button').disabled = true;
+
+            Utils.sleep(3000).then(() => {
+                document.getElementById('play_black_button').disabled = false;
+                document.getElementById('play_white_button').disabled = false;
+            });
+        }
+
+        function play(card) {
+            document.getElementById('play_black_button').disabled = true;
+            document.getElementById('play_white_button').disabled = true;
+
+            playedCard = card;
+
+            document.getElementById('show_cards_button').disabled = false;
+        }
+
+        function showCard() {
+            document.getElementById('show_cards_button').disabled = true;
+
+            document.getElementById(playedCard + '_id').hidden = false;
+
+            document.getElementById('hide_button').disabled = false;
+        }
+
+        function hideCard() {
+            document.getElementById('hide_button').disabled = true;
+
+            document.getElementById(playedCard + '_id').hidden = true;
+
+            document.getElementById('get_cards_button').disabled = false;
+        }
+    </script>
+
+    </form>
+</body>
+</html>

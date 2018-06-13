@@ -69,14 +69,10 @@
         function getCards() {
             document.getElementById('get_cards_id').disabled = true;
 
-            sleep(3000).then(() => {
+            Utils.sleep(3000).then(() => {
                 playerIsChoosing = true;
                 refreshView();
             });
-        }
-
-        function sleep(time) {
-            return new Promise((resolve) => setTimeout(resolve, time));
         }
 
         function playBlack() {
