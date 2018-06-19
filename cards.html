@@ -20,10 +20,18 @@
       </tr>
       <tr>
         <td><input type="button" id="get_button" onclick="getCard()" value="Get card" disabled></td>
+        <td><input type="button" id="return_button" onclick="returnCard()" value="Return card" disabled></td>
+      </tr>
+      <tr>
+        <td><label>Current card</label></td>
         <td><input type="text" id="card_name_id" value=""></td>
       </tr>
     </table>
     <textarea id="card_description_id" readonly cols="40" rows="3"></textarea>
+    <br>
+    <label>Cards out</label>
+    <br>
+    <textarea id="played_cards_id" readonly cols="40" rows="12"></textarea>
 
     <script>
         var numberOfPlayers = 0;
@@ -31,6 +39,8 @@
         var deck = null;
 
         var currentCard = null;
+
+        var playedDeck = null;
 
         function start() {
             var inputNumberOfPlayers = parseInt(document.getElementById('number_of_players_id').value);
@@ -45,6 +55,8 @@
             deck = Rules.getDeck(numberOfPlayers);
             Utils.shuffle(deck);
 
+            playedDeck = [];
+
             currentCard = null;
 
             refreshView();
@@ -52,6 +64,17 @@
 
         function getCard() {
             currentCard = deck.pop();
+
+            playedDeck.push(currentCard);
+
+            refreshView();
+        }
+
+        function returnCard() {
+            deck.push(playedDeck.pop());
+            Utils.shuffle(deck);
+
+            currentCard = playedDeck[playedDeck.length - 1];
 
             refreshView();
         }
@@ -62,6 +85,7 @@
 
             document.getElementById('start_button').disabled = !!deck.length;
             document.getElementById('get_button').disabled = !deck.length;
+            document.getElementById('return_button').disabled = !playedDeck.length;
 
             if (currentCard) {
                 document.getElementById("card_name_id").value = currentCard.name;
@@ -70,6 +94,10 @@
                 document.getElementById("card_name_id").value = "";
                 document.getElementById("card_description_id").value = "";
             }
+
+            var playedCards = "";
+            playedDeck.forEach(c => playedCards = c.name + "\n" + playedCards);
+            document.getElementById("played_cards_id").value = playedCards;
         }
     </script>
 
